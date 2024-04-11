@@ -3,3 +3,7 @@ h1 {
 }
 
 h3 { color: rgb(14, 14, 20);}
+
+.error {
+  color: red;
+}
