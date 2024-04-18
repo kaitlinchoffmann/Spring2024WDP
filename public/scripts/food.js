@@ -9,7 +9,7 @@ function getFood() {
 
     data.forEach(item => {
       food.innerHTML += `
-        <div>Name: ${item.name}</div>
+        <a href="">Name: ${item.name}</a>
         <div>Price: ${item.price}</div>
         <br>
       `
