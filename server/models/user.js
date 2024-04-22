@@ -25,4 +25,4 @@ function getAllUsers2() {
   return users;
 }
 
-module.exports = {getAllUsers, getAllUsers2}
+module.exports = { getAllUsers, getAllUsers2 }
