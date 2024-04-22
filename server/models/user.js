@@ -16,11 +16,30 @@ createTable()
 
 // CRUD functions will go here 
 //R for READ -- get all users
-// let  getAllUsers = () => users;
-
 async function getAllUsers() {
   let sql = `SELECT * FROM User;`
   return await con.query(sql)
 }
 
-module.exports = { getAllUsers }
+async function userExists(username) {
+  let sql = `SELECT * FROM User 
+    WHERE Username = "${username}"
+  `
+  return await con.query(sql)
+}
+
+// let user = {
+//   Username: "cathy123",
+//   Password: "icecream"
+// }
+// login(user)
+
+async function login(user) {
+  let currentUser = await userExists(user.Username)
+  if(!currentUser[0]) throw Error("Username does not exist!")
+  if(user.Password !== currentUser[0].Password) throw Error("Password does not match!")
+
+  return currentUser[0]
+}
+
+module.exports = { getAllUsers, login }
