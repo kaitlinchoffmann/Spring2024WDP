@@ -1,6 +1,5 @@
 const express = require("express")
 const User = require("../models/user")
-const Recipe = require("../models/recipe")
 const router = express.Router()
 
 router
@@ -16,6 +15,15 @@ router
 .post('/login', async (req, res) => {
   try {
     const user = await User.login(req.body)
+    res.send({...user, Password: undefined})
+  } catch(err) {
+    res.status(401).send({message: err.message})
+  }
+})
+
+.post('/register', async (req, res) => {
+  try {
+    const user = await User.register(req.body)
     res.send({...user, Password: undefined})
   } catch(err) {
     res.status(401).send({message: err.message})

@@ -25,15 +25,42 @@ async function userExists(username) {
   let sql = `SELECT * FROM User 
     WHERE Username = "${username}"
   `
-  return await con.query(sql)
+  return await con.query(sql) 
 }
 
-// let user = {
-//   Username: "cathy123",
-//   Password: "icecream"
-// }
+async function emailExists(email) {
+  let sql = `SELECT * FROM User 
+    WHERE Email = "${email}"
+  `
+  return await con.query(sql) 
+}
+
+let user = {
+  Username: "cathy1",
+  Email: "cc@fakemail.com",
+  Password: "icecream"
+}
+// register(user)
 // login(user)
 
+// CREATE in CRUD
+async function register(user) {
+  let cUser = await userExists(user.Username)
+  if(cUser.length > 0) throw Error("Username Already in Use!")
+
+  let email = await emailExists(user.Email)
+  if(email.length > 0) throw Error("Account with Email already in use")
+
+  let sql = `
+    INSERT INTO User(Username, Password, Email)
+    VALUES("${user.Username}", "${user.Password}", "${user.Email}")
+  `
+  await con.query(sql)
+  const u = await userExists(user.Username)
+  return u[0]
+}
+
+// READ in CRUD
 async function login(user) {
   let currentUser = await userExists(user.Username)
   if(!currentUser[0]) throw Error("Username does not exist!")
@@ -42,4 +69,4 @@ async function login(user) {
   return currentUser[0]
 }
 
-module.exports = { getAllUsers, login }
+module.exports = { getAllUsers, login, register }
