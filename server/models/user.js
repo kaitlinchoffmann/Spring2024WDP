@@ -69,4 +69,26 @@ async function login(user) {
   return currentUser[0]
 }
 
-module.exports = { getAllUsers, login, register }
+// UPDATE in CRUD
+async function editUsername(user) {
+  let sql = `
+    UPDATE User SET
+    Username = "${user.Username}"
+    WHERE UserID = ${user.UserID}
+  `
+  await con.query(sql)
+
+  let updatedUser = await userExists(user.Username)
+  return updatedUser[0]
+}
+
+// DELETE in CRUD
+async function deleteAccount(user) {
+  let sql = `
+    DELETE FROM User
+    WHERE UserID = ${user.UserID}
+  `
+  await con.query(sql)
+}
+
+module.exports = { getAllUsers, login, register, editUsername, deleteAccount }

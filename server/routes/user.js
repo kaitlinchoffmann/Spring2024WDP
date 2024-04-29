@@ -30,4 +30,22 @@ router
   }
 })
 
+.put('/edit', async (req, res) => {
+  try {
+    let updatedUser = await User.editUsername(req.body)
+    res.send({...updatedUser, Password: undefined})
+  } catch(err) {
+    res.status(401).send({message: err.message})
+  }
+})
+
+.delete('/remove', async (req, res) => {
+  try {
+    await User.deleteAccount(req.body)
+    res.send({success: "How DARE YOU LEAVE ME!!!! >:((("})
+  } catch(err) {
+    res.status(401).send({message: err.message})
+  }
+})
+
 module.exports = router
