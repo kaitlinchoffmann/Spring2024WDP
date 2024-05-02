@@ -1,3 +1,19 @@
+// Fetch method implementation:
+async function fetchData(route = '', data = {}, methodType) {
+  const response = await fetch(`http://localhost:3000${route}`, {
+    method: methodType, // *POST, PUT, DELETE, etc.
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data) // body data type must match "Content-Type" header
+  });
+  if(response.ok) {
+    return await response.json(); // parses JSON response into native JavaScript objects
+  } else {
+    throw await response.json();
+  }
+} 
+
 let regForm = document.getElementById("regForm")
 
 regForm.addEventListener('submit', register)
@@ -8,6 +24,7 @@ function register(e) {
   let username = document.getElementById("username").value
   let password = document.getElementById("password").value
   let cPassword = document.getElementById("cPassword").value
+  let email = document.getElementById("email").value
 
   if(password !== cPassword) {
     document.querySelector(".error").innerText = "Passwords Must Match!"
@@ -15,9 +32,22 @@ function register(e) {
     document.getElementById("cPassword").value = ""
   } else {
     const user = {
-      uName: username,
-      pword: password
+      Username: username,
+      Password: password,
+      Email: email
     }
+    // make a call to the server
+    fetchData('/users/register', user, 'POST')
+    .then(data => {
+      if(!data.message) {
+        window.location.href = "index.html"
+      }
+    })
+    .catch(err => {
+      let error = document.querySelector(".error")
+      error.innerHTML = `${err.message}`
+    })
+
     document.getElementById("welcome").innerText = `Welcome ${username}!`
   }
   
