@@ -7,16 +7,16 @@ async function fetchData(route = '', data = {}, methodType) {
     },
     body: JSON.stringify(data) // body data type must match "Content-Type" header
   });
-  if(response.ok) {
+  if (response.ok) {
     return await response.json(); // parses JSON response into native JavaScript objects
   } else {
     throw await response.json();
   }
-} 
+}
 
 let regForm = document.getElementById("regForm")
 
-regForm.addEventListener('submit', register)
+if(regForm) regForm.addEventListener('submit', register)
 
 function register(e) {
   e.preventDefault()
@@ -26,7 +26,7 @@ function register(e) {
   let cPassword = document.getElementById("cPassword").value
   let email = document.getElementById("email").value
 
-  if(password !== cPassword) {
+  if (password !== cPassword) {
     document.querySelector(".error").innerText = "Passwords Must Match!"
     document.getElementById("password").value = ""
     document.getElementById("cPassword").value = ""
@@ -38,8 +38,40 @@ function register(e) {
     }
     // make a call to the server
     fetchData('/users/register', user, 'POST')
+      .then(data => {
+        if (!data.message) {
+          window.location.href = "index.html"
+        }
+      })
+      .catch(err => {
+        let error = document.querySelector(".error")
+        error.innerHTML = `${err.message}`
+      })
+
+    document.getElementById("welcome").innerText = `Welcome ${username}!`
+  }
+
+}
+
+let logForm = document.getElementById("logForm")
+
+if(logForm) logForm.addEventListener('submit', login)
+
+function login(e) {
+  e.preventDefault()
+
+  let username = document.getElementById("username").value
+  let password = document.getElementById("password").value
+
+  const user = {
+    Username: username,
+    Password: password
+  }
+  // make a call to the server
+  fetchData('/users/login', user, 'POST')
     .then(data => {
-      if(!data.message) {
+      if (!data.message) {
+        localStorage.setItem('user', JSON.stringify(data))
         window.location.href = "index.html"
       }
     })
@@ -48,17 +80,12 @@ function register(e) {
       error.innerHTML = `${err.message}`
     })
 
-    document.getElementById("welcome").innerText = `Welcome ${username}!`
-  }
-  
-}
-
-// code to add event listener to login form
-function login(e) {
-  // your code to read in login form
+  document.getElementById("welcome").innerText = `Welcome ${username}!`
 }
 
 // code to add event listener to third form of some kind
 function someOtherFunction(e) {
   // your code to read in your third form
 }
+
+// configuring local storage
