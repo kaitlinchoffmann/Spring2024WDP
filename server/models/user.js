@@ -57,6 +57,7 @@ async function register(user) {
   `
   await con.query(sql)
   const u = await userExists(user.Username)
+  console.log(u)
   return u[0]
 }
 
